@@ -151,6 +151,44 @@ class UserHistory:
         # Level 3 — nothing usable; caller defers to Layer 2
         return {"score": 0.0, "level": "none", "n": 0, "weight": 0.0}
 
+    def add_observation(self, user_id: str, intervention_id: str,
+                        timestamp, rating: float) -> None:
+        """
+        Append one newly-observed outcome, for Sub-layer 3.3's online loop.
+
+        The population baseline (`pop_mean`) is deliberately NOT recomputed.
+        It is a property of the training distribution; updating it from
+        streamed test outcomes would let later sessions influence the
+        residual definition used for earlier ones, and the residual target
+        would drift under the model rather than staying a fixed quantity.
+        Only the per-user event list grows.
+
+        Events are kept sorted by timestamp so `score()`'s strictly-before
+        filter stays correct even if observations arrive out of order.
+        """
+        ts = np.datetime64(pd.to_datetime(timestamp))
+        resid = float(rating) - self.pop_mean.get(intervention_id, self.global_mean)
+        icat = INTERVENTION_MAP[intervention_id]["type"]
+
+        u = self._by_user.get(user_id)
+        if u is None:
+            self._by_user[user_id] = {
+                "ts": np.array([ts], dtype="datetime64[ns]"),
+                "inv": np.array([intervention_id], dtype=object),
+                "icat": np.array([icat], dtype=object),
+                "resid": np.array([resid], dtype=float),
+            }
+            return
+
+        u["ts"] = np.append(u["ts"], ts)
+        u["inv"] = np.append(u["inv"], intervention_id)
+        u["icat"] = np.append(u["icat"], icat)
+        u["resid"] = np.append(u["resid"], resid)
+
+        order = np.argsort(u["ts"])
+        for k in ("ts", "inv", "icat", "resid"):
+            u[k] = u[k][order]
+
     def score_many(self, user_id: str, intervention_ids: list, as_of) -> np.ndarray:
         """Vector of personalisation scores for a candidate pool."""
         return np.array([self.score(user_id, i, as_of)["score"]

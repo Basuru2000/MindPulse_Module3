@@ -1,0 +1,14 @@
+# Virtual environments
+.venv/
+.venv-1/
+
+# Python
+__pycache__/
+*.pyc
+
+# Trained models — regenerable via train_gcn.py / train_ann.py
+models/
+
+# OS
+Thumbs.db
+.DS_Store

@@ -132,7 +132,12 @@ def fig_progressive():
     ax2.set_title("(b) Which differences exclude zero?")
     ax2.plot([], [], "o-", color=C_SIG, label="significant")
     ax2.plot([], [], "o-", color=C_NS, label="not distinguishable")
-    ax2.legend(frameon=False, fontsize=8, loc="lower right")
+    # Placed BELOW the axis: at "lower right" it sat on top of the Mean Outcome
+    # row's interval and its label, which is exactly the row a reader most needs
+    # to read clearly since that metric has a known measurement flaw.
+    ax2.legend(frameon=False, fontsize=8, loc="upper center",
+               bbox_to_anchor=(0.5, -0.16), ncol=2)
+    ax2.margins(y=0.08)
 
     fig.suptitle("Layer 2 significantly improves ranking quality at K=3 and NDCG@5; "
                  "no metric is significantly degraded", fontsize=10.5, y=1.02)
@@ -194,42 +199,85 @@ def fig_oversmoothing():
 # ══════════════════════════════════════════════════════════════════════════════
 
 def fig_training():
+    """
+    Layer 2 training curves.
+
+    Panel (a) plots the MEAN validation AUC across folds with a +/-1 SD band,
+    with individual folds shown faintly behind it. An earlier version drew all
+    five folds as separate coloured lines; at the selected learning rate of
+    0.01 the per-fold curves oscillate sharply, and five overlapping sawtooth
+    traces were illegible. The mean-and-band form shows the same information —
+    level, trend, and between-fold spread — in a form a reader can actually
+    read, while the faint individual traces preserve the oscillation rather
+    than smoothing it away.
+
+    Folds stop at different epochs because of early stopping, so the mean is
+    computed over whichever folds are still running at each epoch and the
+    curve is truncated where fewer than three folds remain, beyond which the
+    mean would be dominated by one or two long-running folds.
+    """
     h = pd.read_csv(os.path.join("models", "training_history.csv"))
     cv = h[h["tag"].str.startswith("cv_fold")].copy()
-    best_lr = cv.groupby("lr")["eval_auc"].max().idxmax()
+    best_lr = cv.groupby("lr").apply(
+        lambda g: g.groupby("tag")["eval_auc"].max().mean(),
+        include_groups=False).idxmax()
     sel = cv[cv["lr"] == best_lr]
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.1))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.4, 4.0),
+                                   gridspec_kw={"width_ratios": [1.5, 1]})
 
-    for fold, g in sel.groupby("tag"):
-        ax1.plot(g["epoch"], g["eval_auc"], lw=1.3, alpha=0.85,
-                 label=fold.replace("cv_fold", "fold "))
-    ax1.axhline(0.5, color="black", ls="--", lw=0.9, label="random (0.5)")
-    ax1.set_xlabel("Epoch"); ax1.set_ylabel("Validation ROC-AUC")
-    ax1.set_title(f"(a) Per-fold validation AUC at selected lr = {best_lr}")
-    ax1.legend(frameon=False, fontsize=7.5, ncol=2)
+    # ── Panel (a): mean +/- SD across folds ───────────────────────────────────
+    wide = sel.pivot_table(index="epoch", columns="tag", values="eval_auc")
+    n_folds = wide.notna().sum(axis=1)
+    wide = wide[n_folds >= 3]
+    mean, sd = wide.mean(axis=1), wide.std(axis=1)
 
+    for col in wide.columns:
+        ax1.plot(wide.index, wide[col], color="#BBBBBB", lw=0.6, alpha=0.75,
+                 zorder=1)
+    ax1.fill_between(wide.index, mean - sd, mean + sd, color=C_L2, alpha=0.20,
+                     zorder=2, label="±1 SD across folds")
+    ax1.plot(wide.index, mean, color=C_L2, lw=2.0, zorder=3,
+             label="mean across 5 folds")
+    ax1.plot([], [], color="#BBBBBB", lw=0.6, label="individual folds")
+    ax1.axhline(0.5, color="black", ls="--", lw=0.9, zorder=1,
+                label="random (0.50)")
+
+    ax1.set_xlabel("Epoch")
+    ax1.set_ylabel("Validation ROC-AUC")
+    # Lower bound must clear the faintest individual fold (min 0.395) and the
+    # lower edge of the SD band (0.413); 0.42 was clipping both.
+    lo = min(float((mean - sd).min()), float(wide.min().min())) - 0.02
+    hi = max(float((mean + sd).max()), float(wide.max().max())) + 0.02
+    ax1.set_ylim(lo, hi)
+    ax1.set_title(f"(a) Validation AUC across folds at selected lr = {best_lr}")
+    ax1.legend(frameon=False, fontsize=7.6, loc="lower right")
+
+    # ── Panel (b): CV AUC by learning rate ────────────────────────────────────
     summary = cv.groupby("lr").apply(
         lambda g: g.groupby("tag")["eval_auc"].max().mean(), include_groups=False)
     errs = cv.groupby("lr").apply(
         lambda g: g.groupby("tag")["eval_auc"].max().std(), include_groups=False)
+
     lrs = [str(v) for v in summary.index]
     cols = [C_L2 if v == best_lr else C_BASE for v in summary.index]
-    ax2.bar(lrs, summary.values, yerr=errs.values, capsize=4,
+    ax2.bar(lrs, summary.values, yerr=errs.values, capsize=4, width=0.6,
             color=cols, edgecolor="white", linewidth=0.7)
-    ax2.axhline(0.5, color="black", ls="--", lw=0.9)
+    ax2.axhline(0.5, color="black", ls="--", lw=0.9, zorder=3)
+    ax2.text(2.42, 0.505, "random", fontsize=7.2, va="bottom", ha="right",
+             color="#333333")
+
     for i, (v, e) in enumerate(zip(summary.values, errs.values)):
-        # Place labels ABOVE the error bar cap, not above the bar. Sitting them
-        # at bar+0.02 put them on top of the whisker and made the bar value
-        # easy to misread as the cap value.
-        ax2.text(i, v + (e if np.isfinite(e) else 0) + 0.025, f"{v:.3f}",
-                 ha="center", fontsize=8.5, fontweight="bold")
-    ax2.set_xlabel("Learning rate"); ax2.set_ylabel("5-fold CV AUC")
-    ax2.set_ylim(0, 0.9)
-    ax2.set_title("(b) Learning rate selected by measurement,\nnot by specification")
+        ax2.text(i, v + (e if np.isfinite(e) else 0) + 0.018, f"{v:.3f}",
+                 ha="center", fontsize=8.6, fontweight="bold")
+
+    ax2.set_xlabel("Learning rate")
+    ax2.set_ylabel("5-fold CV AUC")
+    ax2.set_ylim(0, 0.85)          # was 0.9 — removed dead headroom above bars
+    ax2.set_title("(b) Learning rate selected by measurement")
 
     fig.suptitle("Layer 2 GCN training — 5-fold cross-validation grouped by session",
-                 fontsize=10.5, y=1.02)
+                 fontsize=10.5, y=1.03)
     return _save(fig, "fig3_gcn_training.png")
 
 
@@ -243,25 +291,32 @@ def fig_layer3():
              "Sub-layer 3.2 (static MLP)", "Sub-layer 3.3 (online MLP)"]
     d = d.set_index("policy").loc[[p for p in order if p in set(d["policy"])]].reset_index()
 
-    fig, ax = plt.subplots(figsize=(8.4, 3.9))
+    fig, ax = plt.subplots(figsize=(8.6, 3.3))
     y = np.arange(len(d))[::-1]
     cols = [C_L2, C_L3, C_L3, C_L3][:len(d)]
     base = d.loc[d["policy"].str.startswith("Layer 2"), "ips"].iloc[0]
 
-    ax.axvline(base, color=C_L2, ls="--", lw=1, zorder=1,
-               label=f"Layer 2 baseline ({base:.3f})")
+    # The baseline is annotated on the line itself rather than via a legend:
+    # a legend in any corner overprinted a value label, and the bottom-right
+    # corner collided with Sub-layer 3.3's number.
+    ax.axvline(base, color=C_L2, ls="--", lw=1, zorder=1)
+    ax.annotate(f"Layer 2 baseline ({base:.3f})", xy=(base, len(d) - 0.55),
+                xytext=(4, 0), textcoords="offset points",
+                fontsize=8, color=C_L2, va="bottom", ha="left")
     for i, (_, r) in enumerate(d.iterrows()):
         ax.plot([r["ci_low"], r["ci_high"]], [y[i], y[i]], color=cols[i], lw=2.4,
                 solid_capstyle="round")
         ax.plot(r["ips"], y[i], "o", color=cols[i], ms=7, zorder=3)
-        ax.text(r["ci_high"] + 0.03, y[i], f"{r['ips']:.3f}", va="center", fontsize=8.5)
+        ax.text(r["ci_high"] + 0.04, y[i], f"{r['ips']:.3f}", va="center",
+                fontsize=8.5, fontweight="bold")
 
     ax.set_yticks(y); ax.set_yticklabels(d["policy"], fontsize=8.5)
     ax.set_xlabel("IPS estimate of E[outcome rating]   (95% CI, 112 held-out sessions)")
     ax.set_title("Layer 3 — no sub-layer is distinguishable from Layer 2\n"
                  "Intervals overlap almost entirely; the estimator is unbiased but "
                  "underpowered at this sample size", fontsize=10)
-    ax.legend(frameon=False, fontsize=8, loc="lower right")
+    ax.set_ylim(-0.6, len(d) - 0.3)
+    ax.margins(x=0.06)
     return _save(fig, "fig4_layer3_ips.png")
 
 

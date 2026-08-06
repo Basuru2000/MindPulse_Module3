@@ -1,0 +1,965 @@
+[
+ {
+  "key": "acute",
+  "label": "Acute stress at university",
+  "blurb": "Full context available from Module 2. The standard path.",
+  "module1": {
+   "tier": "acute",
+   "confidence": 0.88,
+   "baseline_deviation": 3.1,
+   "signal_quality": "good",
+   "baseline_mode": "personalised",
+   "support_detected": true,
+   "support_score": 0.82,
+   "timestamp": "2026-03-02T14:20:00"
+  },
+  "module2": {
+   "trigger_type": "academic",
+   "trigger_confidence": 0.81,
+   "location_context": "university",
+   "social_context": "alone"
+  },
+  "library": [
+   {
+    "id": "I01",
+    "name": "4-7-8 Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I02",
+    "name": "Box Breathing (4-4-4-4)",
+    "type": "breathing",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I03",
+    "name": "Diaphragmatic Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I04",
+    "name": "5-Minute Brisk Walk",
+    "type": "physical",
+    "duration": 5,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I05",
+    "name": "Progressive Muscle Relaxation",
+    "type": "physical",
+    "duration": 5,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I06",
+    "name": "Cold Water Face Splash",
+    "type": "physical",
+    "duration": 1,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I07",
+    "name": "Grounding Technique (5-4-3-2-1)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I08",
+    "name": "Cognitive Reframing (3 Good Things)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I09",
+    "name": "Worry Postponement",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I10",
+    "name": "Brief Mindfulness Check-in",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I11",
+    "name": "Social Contact Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I12",
+    "name": "Gratitude Message Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I13",
+    "name": "Nature Sound / White Noise",
+    "type": "sensory",
+    "duration": 5,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I14",
+    "name": "Hydration Reminder",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I15",
+    "name": "Stretching (desk-based)",
+    "type": "physical",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I16",
+    "name": "Single-Focus Task Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I17",
+    "name": "Visual Focus Break (20-20-20)",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I18",
+    "name": "Journalling Micro-Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I19",
+    "name": "Self-Compassion Pause",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I20",
+    "name": "Power Posture Reset",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I21",
+    "name": "Rhythmic Tapping (EFT-lite)",
+    "type": "physical",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I22",
+    "name": "Sleep Hygiene Reminder",
+    "type": "cognitive",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   }
+  ],
+  "pool_size": 7,
+  "ranked": [
+   "I02",
+   "I03",
+   "I05"
+  ],
+  "result": {
+   "user_id": "U001",
+   "recommendation_id": "662460fc-f7c1-412a-854e-cc1a3dbff624",
+   "timestamp": "2026-03-02T14:20:00",
+   "suppressed": false,
+   "suppression_reason": null,
+   "intervention_id": "I02",
+   "intervention_type": "breathing",
+   "intervention_name": "Box Breathing (4-4-4-4)",
+   "intervention_duration": 3,
+   "delivery_tier": "acute",
+   "recommendation_layer": "layer3",
+   "layer1_score": 0.7548,
+   "layer2_score": 1.4103516340255737,
+   "layer3_score": 1.6836979389190674,
+   "layer3_delta": 0.27334630489349365,
+   "layer3_changed_ranking": false,
+   "gnn_explanation": "Recommended 'Box Breathing (4-4-4-4)' (breathing, 3 min) because: acute stress tier. Weighed against: academic trigger.",
+   "context_snapshot": {
+    "trigger_type": "academic",
+    "location_context": "university",
+    "social_context": "alone",
+    "baseline_deviation": 3.1,
+    "support_detected": true,
+    "support_score": 0.82
+   },
+   "kg_node_id": "ep_88213",
+   "outcome_check_due": "2026-03-02T14:50:00",
+   "candidate_pool_size": 7,
+   "alternatives": [
+    {
+     "intervention_id": "I03",
+     "intervention_name": "Diaphragmatic Breathing"
+    },
+    {
+     "intervention_id": "I05",
+     "intervention_name": "Progressive Muscle Relaxation"
+    }
+   ],
+   "disclaimer": "This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."
+  }
+ },
+ {
+  "key": "work",
+  "label": "Mild stress at work, with colleagues",
+  "blurb": "Feasibility filtering visibly removes anything needing privacy.",
+  "module1": {
+   "tier": "mild",
+   "confidence": 0.79,
+   "baseline_deviation": 1.1,
+   "signal_quality": "good",
+   "baseline_mode": "personalised",
+   "support_detected": false,
+   "support_score": 0.0,
+   "timestamp": "2026-03-03T10:05:00"
+  },
+  "module2": {
+   "trigger_type": "interpersonal",
+   "trigger_confidence": 0.72,
+   "location_context": "work",
+   "social_context": "colleagues"
+  },
+  "library": [
+   {
+    "id": "I01",
+    "name": "4-7-8 Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": false,
+    "reason": "not with colleagues"
+   },
+   {
+    "id": "I02",
+    "name": "Box Breathing (4-4-4-4)",
+    "type": "breathing",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I03",
+    "name": "Diaphragmatic Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I04",
+    "name": "5-Minute Brisk Walk",
+    "type": "physical",
+    "duration": 5,
+    "feasible": false,
+    "reason": "not work"
+   },
+   {
+    "id": "I05",
+    "name": "Progressive Muscle Relaxation",
+    "type": "physical",
+    "duration": 5,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I06",
+    "name": "Cold Water Face Splash",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I07",
+    "name": "Grounding Technique (5-4-3-2-1)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I08",
+    "name": "Cognitive Reframing (3 Good Things)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I09",
+    "name": "Worry Postponement",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I10",
+    "name": "Brief Mindfulness Check-in",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": false,
+    "reason": "not with colleagues"
+   },
+   {
+    "id": "I11",
+    "name": "Social Contact Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": false,
+    "reason": "not with colleagues"
+   },
+   {
+    "id": "I12",
+    "name": "Gratitude Message Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I13",
+    "name": "Nature Sound / White Noise",
+    "type": "sensory",
+    "duration": 5,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I14",
+    "name": "Hydration Reminder",
+    "type": "physical",
+    "duration": 1,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I15",
+    "name": "Stretching (desk-based)",
+    "type": "physical",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I16",
+    "name": "Single-Focus Task Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I17",
+    "name": "Visual Focus Break (20-20-20)",
+    "type": "physical",
+    "duration": 1,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I18",
+    "name": "Journalling Micro-Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I19",
+    "name": "Self-Compassion Pause",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I20",
+    "name": "Power Posture Reset",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "not with colleagues"
+   },
+   {
+    "id": "I21",
+    "name": "Rhythmic Tapping (EFT-lite)",
+    "type": "physical",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I22",
+    "name": "Sleep Hygiene Reminder",
+    "type": "cognitive",
+    "duration": 1,
+    "feasible": false,
+    "reason": "evening/night only"
+   }
+  ],
+  "pool_size": 9,
+  "ranked": [
+   "I09",
+   "I19",
+   "I18"
+  ],
+  "result": {
+   "user_id": "U002",
+   "recommendation_id": "82a32c32-bd51-4f6b-9d55-c8158a8ad325",
+   "timestamp": "2026-03-03T10:05:00",
+   "suppressed": false,
+   "suppression_reason": null,
+   "intervention_id": "I09",
+   "intervention_type": "cognitive",
+   "intervention_name": "Worry Postponement",
+   "intervention_duration": 3,
+   "delivery_tier": "mild",
+   "recommendation_layer": "layer3",
+   "layer1_score": 0.63,
+   "layer2_score": -0.5394960045814514,
+   "layer3_score": -0.5829044580459595,
+   "layer3_delta": -0.04340845346450806,
+   "layer3_changed_ranking": true,
+   "gnn_explanation": "Recommended 'Worry Postponement' (cognitive, 3 min) because: interpersonal trigger + with colleagues. Weighed against: mild stress tier.",
+   "context_snapshot": {
+    "trigger_type": "interpersonal",
+    "location_context": "work",
+    "social_context": "colleagues",
+    "baseline_deviation": 1.1,
+    "support_detected": false,
+    "support_score": 0.0
+   },
+   "kg_node_id": null,
+   "outcome_check_due": "2026-03-03T10:35:00",
+   "candidate_pool_size": 9,
+   "alternatives": [
+    {
+     "intervention_id": "I19",
+     "intervention_name": "Self-Compassion Pause"
+    },
+    {
+     "intervention_id": "I18",
+     "intervention_name": "Journalling Micro-Prompt"
+    }
+   ],
+   "disclaimer": "This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."
+  }
+ },
+ {
+  "key": "nodialogue",
+  "label": "No Module 2 dialogue",
+  "blurb": "Context unavailable. The module proceeds on Module 1 alone.",
+  "module1": {
+   "tier": "moderate",
+   "confidence": 0.74,
+   "baseline_deviation": 2.0,
+   "signal_quality": "degraded",
+   "baseline_mode": "cold_start",
+   "support_detected": true,
+   "support_score": 0.55,
+   "timestamp": "2026-03-04T21:40:00"
+  },
+  "module2": null,
+  "library": [
+   {
+    "id": "I01",
+    "name": "4-7-8 Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I02",
+    "name": "Box Breathing (4-4-4-4)",
+    "type": "breathing",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I03",
+    "name": "Diaphragmatic Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I04",
+    "name": "5-Minute Brisk Walk",
+    "type": "physical",
+    "duration": 5,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I05",
+    "name": "Progressive Muscle Relaxation",
+    "type": "physical",
+    "duration": 5,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I06",
+    "name": "Cold Water Face Splash",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I07",
+    "name": "Grounding Technique (5-4-3-2-1)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I08",
+    "name": "Cognitive Reframing (3 Good Things)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I09",
+    "name": "Worry Postponement",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I10",
+    "name": "Brief Mindfulness Check-in",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I11",
+    "name": "Social Contact Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I12",
+    "name": "Gratitude Message Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I13",
+    "name": "Nature Sound / White Noise",
+    "type": "sensory",
+    "duration": 5,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I14",
+    "name": "Hydration Reminder",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I15",
+    "name": "Stretching (desk-based)",
+    "type": "physical",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I16",
+    "name": "Single-Focus Task Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I17",
+    "name": "Visual Focus Break (20-20-20)",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I18",
+    "name": "Journalling Micro-Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I19",
+    "name": "Self-Compassion Pause",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I20",
+    "name": "Power Posture Reset",
+    "type": "physical",
+    "duration": 1,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I21",
+    "name": "Rhythmic Tapping (EFT-lite)",
+    "type": "physical",
+    "duration": 2,
+    "feasible": true,
+    "reason": null
+   },
+   {
+    "id": "I22",
+    "name": "Sleep Hygiene Reminder",
+    "type": "cognitive",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   }
+  ],
+  "pool_size": 14,
+  "ranked": [
+   "I03",
+   "I02",
+   "I19"
+  ],
+  "result": {
+   "user_id": "U003",
+   "recommendation_id": "02fff041-f2c2-4590-9835-76d337d53148",
+   "timestamp": "2026-03-04T21:40:00",
+   "suppressed": false,
+   "suppression_reason": null,
+   "intervention_id": "I03",
+   "intervention_type": "breathing",
+   "intervention_name": "Diaphragmatic Breathing",
+   "intervention_duration": 2,
+   "delivery_tier": "moderate",
+   "recommendation_layer": "layer3",
+   "layer1_score": 0.494,
+   "layer2_score": 0.09942376613616943,
+   "layer3_score": 0.9201436638832092,
+   "layer3_delta": 0.8207198977470398,
+   "layer3_changed_ranking": false,
+   "gnn_explanation": "Recommended 'Diaphragmatic Breathing' (breathing, 2 min) because: moderate stress tier. Weighed against: unspecified trigger.",
+   "context_snapshot": {
+    "trigger_type": "unknown",
+    "location_context": "unknown",
+    "social_context": "unknown",
+    "baseline_deviation": 2.0,
+    "support_detected": true,
+    "support_score": 0.55
+   },
+   "kg_node_id": null,
+   "outcome_check_due": "2026-03-04T22:10:00",
+   "candidate_pool_size": 14,
+   "alternatives": [
+    {
+     "intervention_id": "I02",
+     "intervention_name": "Box Breathing (4-4-4-4)"
+    },
+    {
+     "intervention_id": "I19",
+     "intervention_name": "Self-Compassion Pause"
+    }
+   ],
+   "disclaimer": "This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."
+  }
+ },
+ {
+  "key": "suppressed",
+  "label": "Poor signal quality",
+  "blurb": "The physiological signal cannot be trusted. Nothing is issued.",
+  "module1": {
+   "tier": "acute",
+   "confidence": 0.91,
+   "baseline_deviation": 2.8,
+   "signal_quality": "poor",
+   "baseline_mode": "personalised",
+   "support_detected": false,
+   "support_score": 0.0,
+   "timestamp": "2026-03-06T09:15:00"
+  },
+  "module2": {
+   "trigger_type": "financial",
+   "trigger_confidence": 0.7,
+   "location_context": "home",
+   "social_context": "alone"
+  },
+  "library": [
+   {
+    "id": "I01",
+    "name": "4-7-8 Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I02",
+    "name": "Box Breathing (4-4-4-4)",
+    "type": "breathing",
+    "duration": 3,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I03",
+    "name": "Diaphragmatic Breathing",
+    "type": "breathing",
+    "duration": 2,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I04",
+    "name": "5-Minute Brisk Walk",
+    "type": "physical",
+    "duration": 5,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I05",
+    "name": "Progressive Muscle Relaxation",
+    "type": "physical",
+    "duration": 5,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I06",
+    "name": "Cold Water Face Splash",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I07",
+    "name": "Grounding Technique (5-4-3-2-1)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I08",
+    "name": "Cognitive Reframing (3 Good Things)",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I09",
+    "name": "Worry Postponement",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I10",
+    "name": "Brief Mindfulness Check-in",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I11",
+    "name": "Social Contact Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I12",
+    "name": "Gratitude Message Prompt",
+    "type": "social",
+    "duration": 2,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I13",
+    "name": "Nature Sound / White Noise",
+    "type": "sensory",
+    "duration": 5,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I14",
+    "name": "Hydration Reminder",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I15",
+    "name": "Stretching (desk-based)",
+    "type": "physical",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I16",
+    "name": "Single-Focus Task Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I17",
+    "name": "Visual Focus Break (20-20-20)",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I18",
+    "name": "Journalling Micro-Prompt",
+    "type": "cognitive",
+    "duration": 3,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I19",
+    "name": "Self-Compassion Pause",
+    "type": "cognitive",
+    "duration": 2,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I20",
+    "name": "Power Posture Reset",
+    "type": "physical",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   },
+   {
+    "id": "I21",
+    "name": "Rhythmic Tapping (EFT-lite)",
+    "type": "physical",
+    "duration": 2,
+    "feasible": false,
+    "reason": "lower priority"
+   },
+   {
+    "id": "I22",
+    "name": "Sleep Hygiene Reminder",
+    "type": "cognitive",
+    "duration": 1,
+    "feasible": false,
+    "reason": "wrong stress tier"
+   }
+  ],
+  "pool_size": 0,
+  "ranked": [],
+  "result": {
+   "user_id": "U005",
+   "recommendation_id": "ac2e9921-bd75-41d1-9e51-c5274a1de5fe",
+   "timestamp": "2026-03-06T09:15:00",
+   "suppressed": true,
+   "suppression_reason": "signal quality poor \u2014 event logged, no push",
+   "intervention_id": null,
+   "intervention_type": null,
+   "intervention_name": null,
+   "intervention_duration": null,
+   "delivery_tier": "acute",
+   "recommendation_layer": null,
+   "layer1_score": null,
+   "layer2_score": null,
+   "layer3_score": null,
+   "gnn_explanation": "No recommendation issued: signal quality poor \u2014 event logged, no push",
+   "context_snapshot": {
+    "trigger_type": "financial",
+    "location_context": "home",
+    "social_context": "alone",
+    "baseline_deviation": 2.8,
+    "support_detected": false,
+    "support_score": 0.0
+   },
+   "kg_node_id": null,
+   "outcome_check_due": null,
+   "alternatives": [],
+   "disclaimer": "This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."
+  }
+ }
+]

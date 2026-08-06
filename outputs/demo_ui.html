@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MindPulse — Module 3 · Personalised Recommendation</title>
+<style>
+/* ── Palette lifted from the MindPulse deck so this reads as the same project ──
+   Deep teal for structure, brighter teal for live values, amber reserved for
+   the single thing that must not be missed (the suppression state).          */
+:root{
+  --ink:#0E3B3B;          /* display type, deep structure            */
+  --teal:#0F5C57;         /* primary                                 */
+  --teal-br:#12A594;      /* live values, active state               */
+  --amber:#E0A419;        /* used once, for suppression only         */
+  --paper:#FFFFFF;
+  --panel:#F1F5F4;        /* the deck's light grey panel             */
+  --line:#DCE5E3;
+  --muted:#6B7F7D;
+  --dim:#A7B6B4;
+  --font-d:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --font-b:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font-b);color:var(--ink);background:var(--paper);
+  line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding:16px 30px 14px;
+}
+.wrap{max-width:1240px;margin:0 auto}
+
+/* ── Masthead ─────────────────────────────────────────────────────────────── */
+.eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--teal-br);margin-bottom:6px;
+}
+h1{font-family:var(--font-d);font-size:28px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13.5px;margin-top:3px}
+.masthead{display:flex;justify-content:space-between;align-items:flex-start;
+  padding-bottom:13px;border-bottom:1px solid var(--line)}
+.badge{
+  width:46px;height:46px;border-radius:50%;background:var(--teal);
+  color:#fff;font-family:var(--font-d);font-size:20px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+
+/* ── Scenario switcher ────────────────────────────────────────────────────── */
+/* cross-page navigation */
+.nav{display:flex;gap:8px;margin:14px 0 10px}
+.nav a{font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:7px;
+  border:1px solid var(--line);color:var(--muted);text-decoration:none;
+  transition:all .16s ease}
+.nav a:hover{border-color:var(--teal-br);color:var(--teal)}
+.nav a.here{background:var(--teal);border-color:var(--teal);color:#fff}
+.nav a:focus-visible{outline:2px solid var(--teal-br);outline-offset:2px}
+
+.tabs{display:flex;gap:8px;margin:0 0 10px;flex-wrap:wrap}
+.tab{
+  font-family:var(--font-b);font-size:12.5px;font-weight:600;
+  padding:9px 15px;border:1px solid var(--line);border-radius:7px;
+  background:var(--paper);color:var(--muted);cursor:pointer;
+  transition:all .16s ease;
+}
+.tab:hover{border-color:var(--teal-br);color:var(--teal)}
+.tab[aria-selected="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.tab:focus-visible{outline:2px solid var(--teal-br);outline-offset:2px}
+
+.blurb{font-size:12.5px;color:var(--muted);margin-bottom:13px;font-style:italic}
+
+/* ── Input strip ──────────────────────────────────────────────────────────── */
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.card{background:var(--panel);border-radius:9px;padding:11px 15px}
+.card.absent{background:repeating-linear-gradient(45deg,#F7F9F8,#F7F9F8 8px,#F1F5F4 8px,#F1F5F4 16px);
+  color:var(--dim)}
+.card h3{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:9px}
+.card.absent h3{color:var(--dim)}
+.fields{display:flex;flex-wrap:wrap;gap:5px 20px}
+.f{font-size:12.5px}
+.f b{font-weight:600;color:var(--ink)}
+.f span{color:var(--muted)}
+.absent .empty{font-size:12.5px;font-style:italic}
+
+/* ── THE FUNNEL — the signature element ───────────────────────────────────── */
+.funnel{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:14px}
+.funnel-head{display:grid;grid-template-columns:1fr 1fr;background:var(--panel);
+  border-bottom:1px solid var(--line)}
+.fh{padding:9px 15px}
+.fh:first-child{border-right:1px solid var(--line)}
+.fh .n{font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--teal)}
+.fh .n em{font-style:normal;color:var(--dim);font-size:14px;font-weight:400}
+.fh .t{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-top:1px}
+
+.funnel-body{display:grid;grid-template-columns:1fr 1fr;min-height:150px}
+.col{padding:12px 15px}
+.col:first-child{border-right:1px solid var(--line)}
+
+/* library pills */
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill{
+  font-size:11.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line);
+  background:var(--paper);color:var(--ink);
+  transition:opacity .3s ease, filter .3s ease;
+}
+.pill.out{background:transparent;border-style:dashed;border-color:#E6ECEA;
+  color:var(--dim);text-decoration:line-through;text-decoration-color:#D5DEDC}
+.pill.out .why{display:block;font-size:9.5px;letter-spacing:.02em;
+  text-decoration:none;color:#B9C6C4;margin-top:1px}
+.pill.keep{border-color:var(--teal-br);background:#F0FAF8;color:var(--teal);font-weight:600}
+
+/* ranked output */
+.rank{list-style:none;display:flex;flex-direction:column;gap:7px}
+.rank li{display:flex;align-items:center;gap:11px;padding:9px 11px;
+  border:1px solid var(--line);border-radius:7px;background:var(--paper)}
+.rank li.top{border-color:var(--teal);background:#F0FAF8}
+.rank .pos{font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--dim);
+  width:15px;flex:none;text-align:center}
+.rank li.top .pos{color:var(--teal)}
+.rank .nm{font-size:13px;font-weight:600}
+.rank .meta{font-size:11.5px;color:var(--muted)}
+.rank .tag{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--teal-br)}
+
+/* ── Result row ───────────────────────────────────────────────────────────── */
+.result{display:grid;grid-template-columns:1.55fr 1fr;gap:14px}
+.rec{border:1px solid var(--teal);border-radius:11px;padding:14px 18px}
+.rec .lab{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--teal-br);margin-bottom:7px}
+.rec h2{font-family:var(--font-d);font-size:23px;font-weight:700;line-height:1.15}
+.rec .m{font-size:12.5px;color:var(--muted);margin-top:3px}
+.why-box{margin-top:10px;padding:10px 13px;background:var(--panel);border-radius:7px;
+  border-left:3px solid var(--teal-br);font-size:13px;line-height:1.55}
+.why-box b{font-weight:600}
+
+/* suppression — the one place amber is used */
+.rec.supp{border-color:var(--amber);background:#FEFBF4}
+.rec.supp .lab{color:var(--amber)}
+.rec.supp .why-box{border-left-color:var(--amber);background:#FDF6E7}
+
+/* score progression */
+.scores{display:flex;align-items:center;gap:0;margin-top:11px}
+.sc{flex:1;text-align:center;padding:9px 4px;background:var(--panel);border-radius:7px}
+.sc .v{font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--teal)}
+.sc .k{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);margin-top:1px}
+.arw{color:var(--dim);font-size:13px;padding:0 8px;flex:none}
+
+.side{display:flex;flex-direction:column;gap:11px}
+.mini{background:var(--panel);border-radius:9px;padding:11px 15px}
+.mini h3{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:8px}
+.mini .row{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0}
+.mini .row span{color:var(--muted)}
+.mini .row b{font-weight:600}
+.disc{font-size:11.5px;color:var(--muted);line-height:1.5;font-style:italic}
+
+footer{margin-top:12px;padding-top:9px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim)}
+
+@media (max-width:980px){
+  .inputs,.funnel-head,.funnel-body,.result{grid-template-columns:1fr}
+  .col:first-child,.fh:first-child{border-right:0;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <div class="eyebrow">Module 3 · MindPulse</div>
+      <h1>Personalised Recommendation Engine</h1>
+      <div class="sub">Rules decide what is permissible. Learning decides the order.</div>
+    </div>
+    <div class="badge">3</div>
+  </div>
+
+  <nav class="nav">
+    <a href="demo_ui.html" class="here" aria-current="page">Recommendation workflow</a>
+    <a href="demo_results.html">Evaluation &amp; findings</a>
+  </nav>
+
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="blurb" id="blurb"></div>
+
+  <div class="inputs">
+    <div class="card" id="m1card">
+      <h3>Module 1 — Stress Profile</h3>
+      <div class="fields" id="m1"></div>
+    </div>
+    <div class="card" id="m2card">
+      <h3>Module 2 — Context</h3>
+      <div class="fields" id="m2"></div>
+    </div>
+  </div>
+
+  <div class="funnel">
+    <div class="funnel-head">
+      <div class="fh">
+        <div class="n" id="poolCount">22</div>
+        <div class="t">Layer 1 — feasibility filtering</div>
+      </div>
+      <div class="fh">
+        <div class="n" id="rankHead">Ranked</div>
+        <div class="t">Layers 2 &amp; 3 — ordering</div>
+      </div>
+    </div>
+    <div class="funnel-body">
+      <div class="col"><div class="pills" id="pills"></div></div>
+      <div class="col"><ol class="rank" id="rank"></ol></div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="rec" id="rec"></div>
+    <div class="side" id="side"></div>
+  </div>
+
+  <footer>
+    <span>MindPulse — Team MindForge</span>
+    <span id="foot"></span>
+  </footer>
+
+</div>
+
+<script>
+const DATA = [{"key":"acute","label":"Acute stress at university","blurb":"Full context available from Module 2. The standard path.","module1":{"tier":"acute","confidence":0.88,"baseline_deviation":3.1,"signal_quality":"good","baseline_mode":"personalised","support_detected":true,"support_score":0.82,"timestamp":"2026-03-02T14:20:00"},"module2":{"trigger_type":"academic","trigger_confidence":0.81,"location_context":"university","social_context":"alone"},"library":[{"id":"I01","name":"4-7-8 Breathing","type":"breathing","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I02","name":"Box Breathing (4-4-4-4)","type":"breathing","duration":3,"feasible":true,"reason":null},{"id":"I03","name":"Diaphragmatic Breathing","type":"breathing","duration":2,"feasible":true,"reason":null},{"id":"I04","name":"5-Minute Brisk Walk","type":"physical","duration":5,"feasible":false,"reason":"wrong stress tier"},{"id":"I05","name":"Progressive Muscle Relaxation","type":"physical","duration":5,"feasible":true,"reason":null},{"id":"I06","name":"Cold Water Face Splash","type":"physical","duration":1,"feasible":true,"reason":null},{"id":"I07","name":"Grounding Technique (5-4-3-2-1)","type":"cognitive","duration":3,"feasible":true,"reason":null},{"id":"I08","name":"Cognitive Reframing (3 Good Things)","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I09","name":"Worry Postponement","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I10","name":"Brief Mindfulness Check-in","type":"cognitive","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I11","name":"Social Contact Prompt","type":"social","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I12","name":"Gratitude Message Prompt","type":"social","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I13","name":"Nature Sound / White Noise","type":"sensory","duration":5,"feasible":false,"reason":"wrong stress tier"},{"id":"I14","name":"Hydration Reminder","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I15","name":"Stretching (desk-based)","type":"physical","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I16","name":"Single-Focus Task Prompt","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I17","name":"Visual Focus Break (20-20-20)","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I18","name":"Journalling Micro-Prompt","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I19","name":"Self-Compassion Pause","type":"cognitive","duration":2,"feasible":true,"reason":null},{"id":"I20","name":"Power Posture Reset","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I21","name":"Rhythmic Tapping (EFT-lite)","type":"physical","duration":2,"feasible":true,"reason":null},{"id":"I22","name":"Sleep Hygiene Reminder","type":"cognitive","duration":1,"feasible":false,"reason":"wrong stress tier"}],"pool_size":7,"ranked":["I02","I03","I05"],"result":{"user_id":"U001","recommendation_id":"662460fc-f7c1-412a-854e-cc1a3dbff624","timestamp":"2026-03-02T14:20:00","suppressed":false,"suppression_reason":null,"intervention_id":"I02","intervention_type":"breathing","intervention_name":"Box Breathing (4-4-4-4)","intervention_duration":3,"delivery_tier":"acute","recommendation_layer":"layer3","layer1_score":0.7548,"layer2_score":1.4103516340255737,"layer3_score":1.6836979389190674,"layer3_delta":0.27334630489349365,"layer3_changed_ranking":false,"gnn_explanation":"Recommended 'Box Breathing (4-4-4-4)' (breathing, 3 min) because: acute stress tier. Weighed against: academic trigger.","context_snapshot":{"trigger_type":"academic","location_context":"university","social_context":"alone","baseline_deviation":3.1,"support_detected":true,"support_score":0.82},"kg_node_id":"ep_88213","outcome_check_due":"2026-03-02T14:50:00","candidate_pool_size":7,"alternatives":[{"intervention_id":"I03","intervention_name":"Diaphragmatic Breathing"},{"intervention_id":"I05","intervention_name":"Progressive Muscle Relaxation"}],"disclaimer":"This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."}},{"key":"work","label":"Mild stress at work, with colleagues","blurb":"Feasibility filtering visibly removes anything needing privacy.","module1":{"tier":"mild","confidence":0.79,"baseline_deviation":1.1,"signal_quality":"good","baseline_mode":"personalised","support_detected":false,"support_score":0.0,"timestamp":"2026-03-03T10:05:00"},"module2":{"trigger_type":"interpersonal","trigger_confidence":0.72,"location_context":"work","social_context":"colleagues"},"library":[{"id":"I01","name":"4-7-8 Breathing","type":"breathing","duration":2,"feasible":false,"reason":"not with colleagues"},{"id":"I02","name":"Box Breathing (4-4-4-4)","type":"breathing","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I03","name":"Diaphragmatic Breathing","type":"breathing","duration":2,"feasible":true,"reason":null},{"id":"I04","name":"5-Minute Brisk Walk","type":"physical","duration":5,"feasible":false,"reason":"not work"},{"id":"I05","name":"Progressive Muscle Relaxation","type":"physical","duration":5,"feasible":false,"reason":"wrong stress tier"},{"id":"I06","name":"Cold Water Face Splash","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I07","name":"Grounding Technique (5-4-3-2-1)","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I08","name":"Cognitive Reframing (3 Good Things)","type":"cognitive","duration":3,"feasible":true,"reason":null},{"id":"I09","name":"Worry Postponement","type":"cognitive","duration":3,"feasible":true,"reason":null},{"id":"I10","name":"Brief Mindfulness Check-in","type":"cognitive","duration":2,"feasible":false,"reason":"not with colleagues"},{"id":"I11","name":"Social Contact Prompt","type":"social","duration":2,"feasible":false,"reason":"not with colleagues"},{"id":"I12","name":"Gratitude Message Prompt","type":"social","duration":2,"feasible":true,"reason":null},{"id":"I13","name":"Nature Sound / White Noise","type":"sensory","duration":5,"feasible":false,"reason":"wrong stress tier"},{"id":"I14","name":"Hydration Reminder","type":"physical","duration":1,"feasible":true,"reason":null},{"id":"I15","name":"Stretching (desk-based)","type":"physical","duration":3,"feasible":true,"reason":null},{"id":"I16","name":"Single-Focus Task Prompt","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I17","name":"Visual Focus Break (20-20-20)","type":"physical","duration":1,"feasible":true,"reason":null},{"id":"I18","name":"Journalling Micro-Prompt","type":"cognitive","duration":3,"feasible":true,"reason":null},{"id":"I19","name":"Self-Compassion Pause","type":"cognitive","duration":2,"feasible":true,"reason":null},{"id":"I20","name":"Power Posture Reset","type":"physical","duration":1,"feasible":false,"reason":"not with colleagues"},{"id":"I21","name":"Rhythmic Tapping (EFT-lite)","type":"physical","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I22","name":"Sleep Hygiene Reminder","type":"cognitive","duration":1,"feasible":false,"reason":"evening/night only"}],"pool_size":9,"ranked":["I09","I19","I18"],"result":{"user_id":"U002","recommendation_id":"82a32c32-bd51-4f6b-9d55-c8158a8ad325","timestamp":"2026-03-03T10:05:00","suppressed":false,"suppression_reason":null,"intervention_id":"I09","intervention_type":"cognitive","intervention_name":"Worry Postponement","intervention_duration":3,"delivery_tier":"mild","recommendation_layer":"layer3","layer1_score":0.63,"layer2_score":-0.5394960045814514,"layer3_score":-0.5829044580459595,"layer3_delta":-0.04340845346450806,"layer3_changed_ranking":true,"gnn_explanation":"Recommended 'Worry Postponement' (cognitive, 3 min) because: interpersonal trigger + with colleagues. Weighed against: mild stress tier.","context_snapshot":{"trigger_type":"interpersonal","location_context":"work","social_context":"colleagues","baseline_deviation":1.1,"support_detected":false,"support_score":0.0},"kg_node_id":null,"outcome_check_due":"2026-03-03T10:35:00","candidate_pool_size":9,"alternatives":[{"intervention_id":"I19","intervention_name":"Self-Compassion Pause"},{"intervention_id":"I18","intervention_name":"Journalling Micro-Prompt"}],"disclaimer":"This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."}},{"key":"nodialogue","label":"No Module 2 dialogue","blurb":"Context unavailable. The module proceeds on Module 1 alone.","module1":{"tier":"moderate","confidence":0.74,"baseline_deviation":2.0,"signal_quality":"degraded","baseline_mode":"cold_start","support_detected":true,"support_score":0.55,"timestamp":"2026-03-04T21:40:00"},"module2":null,"library":[{"id":"I01","name":"4-7-8 Breathing","type":"breathing","duration":2,"feasible":true,"reason":null},{"id":"I02","name":"Box Breathing (4-4-4-4)","type":"breathing","duration":3,"feasible":true,"reason":null},{"id":"I03","name":"Diaphragmatic Breathing","type":"breathing","duration":2,"feasible":true,"reason":null},{"id":"I04","name":"5-Minute Brisk Walk","type":"physical","duration":5,"feasible":true,"reason":null},{"id":"I05","name":"Progressive Muscle Relaxation","type":"physical","duration":5,"feasible":true,"reason":null},{"id":"I06","name":"Cold Water Face Splash","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I07","name":"Grounding Technique (5-4-3-2-1)","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I08","name":"Cognitive Reframing (3 Good Things)","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I09","name":"Worry Postponement","type":"cognitive","duration":3,"feasible":true,"reason":null},{"id":"I10","name":"Brief Mindfulness Check-in","type":"cognitive","duration":2,"feasible":true,"reason":null},{"id":"I11","name":"Social Contact Prompt","type":"social","duration":2,"feasible":true,"reason":null},{"id":"I12","name":"Gratitude Message Prompt","type":"social","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I13","name":"Nature Sound / White Noise","type":"sensory","duration":5,"feasible":true,"reason":null},{"id":"I14","name":"Hydration Reminder","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I15","name":"Stretching (desk-based)","type":"physical","duration":3,"feasible":true,"reason":null},{"id":"I16","name":"Single-Focus Task Prompt","type":"cognitive","duration":3,"feasible":true,"reason":null},{"id":"I17","name":"Visual Focus Break (20-20-20)","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I18","name":"Journalling Micro-Prompt","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I19","name":"Self-Compassion Pause","type":"cognitive","duration":2,"feasible":true,"reason":null},{"id":"I20","name":"Power Posture Reset","type":"physical","duration":1,"feasible":true,"reason":null},{"id":"I21","name":"Rhythmic Tapping (EFT-lite)","type":"physical","duration":2,"feasible":true,"reason":null},{"id":"I22","name":"Sleep Hygiene Reminder","type":"cognitive","duration":1,"feasible":false,"reason":"wrong stress tier"}],"pool_size":14,"ranked":["I03","I02","I19"],"result":{"user_id":"U003","recommendation_id":"02fff041-f2c2-4590-9835-76d337d53148","timestamp":"2026-03-04T21:40:00","suppressed":false,"suppression_reason":null,"intervention_id":"I03","intervention_type":"breathing","intervention_name":"Diaphragmatic Breathing","intervention_duration":2,"delivery_tier":"moderate","recommendation_layer":"layer3","layer1_score":0.494,"layer2_score":0.09942376613616943,"layer3_score":0.9201436638832092,"layer3_delta":0.8207198977470398,"layer3_changed_ranking":false,"gnn_explanation":"Recommended 'Diaphragmatic Breathing' (breathing, 2 min) because: moderate stress tier. Weighed against: unspecified trigger.","context_snapshot":{"trigger_type":"unknown","location_context":"unknown","social_context":"unknown","baseline_deviation":2.0,"support_detected":true,"support_score":0.55},"kg_node_id":null,"outcome_check_due":"2026-03-04T22:10:00","candidate_pool_size":14,"alternatives":[{"intervention_id":"I02","intervention_name":"Box Breathing (4-4-4-4)"},{"intervention_id":"I19","intervention_name":"Self-Compassion Pause"}],"disclaimer":"This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."}},{"key":"suppressed","label":"Poor signal quality","blurb":"The physiological signal cannot be trusted. Nothing is issued.","module1":{"tier":"acute","confidence":0.91,"baseline_deviation":2.8,"signal_quality":"poor","baseline_mode":"personalised","support_detected":false,"support_score":0.0,"timestamp":"2026-03-06T09:15:00"},"module2":{"trigger_type":"financial","trigger_confidence":0.7,"location_context":"home","social_context":"alone"},"library":[{"id":"I01","name":"4-7-8 Breathing","type":"breathing","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I02","name":"Box Breathing (4-4-4-4)","type":"breathing","duration":3,"feasible":false,"reason":"lower priority"},{"id":"I03","name":"Diaphragmatic Breathing","type":"breathing","duration":2,"feasible":false,"reason":"lower priority"},{"id":"I04","name":"5-Minute Brisk Walk","type":"physical","duration":5,"feasible":false,"reason":"wrong stress tier"},{"id":"I05","name":"Progressive Muscle Relaxation","type":"physical","duration":5,"feasible":false,"reason":"lower priority"},{"id":"I06","name":"Cold Water Face Splash","type":"physical","duration":1,"feasible":false,"reason":"lower priority"},{"id":"I07","name":"Grounding Technique (5-4-3-2-1)","type":"cognitive","duration":3,"feasible":false,"reason":"lower priority"},{"id":"I08","name":"Cognitive Reframing (3 Good Things)","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I09","name":"Worry Postponement","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I10","name":"Brief Mindfulness Check-in","type":"cognitive","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I11","name":"Social Contact Prompt","type":"social","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I12","name":"Gratitude Message Prompt","type":"social","duration":2,"feasible":false,"reason":"wrong stress tier"},{"id":"I13","name":"Nature Sound / White Noise","type":"sensory","duration":5,"feasible":false,"reason":"wrong stress tier"},{"id":"I14","name":"Hydration Reminder","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I15","name":"Stretching (desk-based)","type":"physical","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I16","name":"Single-Focus Task Prompt","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I17","name":"Visual Focus Break (20-20-20)","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I18","name":"Journalling Micro-Prompt","type":"cognitive","duration":3,"feasible":false,"reason":"wrong stress tier"},{"id":"I19","name":"Self-Compassion Pause","type":"cognitive","duration":2,"feasible":false,"reason":"lower priority"},{"id":"I20","name":"Power Posture Reset","type":"physical","duration":1,"feasible":false,"reason":"wrong stress tier"},{"id":"I21","name":"Rhythmic Tapping (EFT-lite)","type":"physical","duration":2,"feasible":false,"reason":"lower priority"},{"id":"I22","name":"Sleep Hygiene Reminder","type":"cognitive","duration":1,"feasible":false,"reason":"wrong stress tier"}],"pool_size":0,"ranked":[],"result":{"user_id":"U005","recommendation_id":"ac2e9921-bd75-41d1-9e51-c5274a1de5fe","timestamp":"2026-03-06T09:15:00","suppressed":true,"suppression_reason":"signal quality poor \u2014 event logged, no push","intervention_id":null,"intervention_type":null,"intervention_name":null,"intervention_duration":null,"delivery_tier":"acute","recommendation_layer":null,"layer1_score":null,"layer2_score":null,"layer3_score":null,"gnn_explanation":"No recommendation issued: signal quality poor \u2014 event logged, no push","context_snapshot":{"trigger_type":"financial","location_context":"home","social_context":"alone","baseline_deviation":2.8,"support_detected":false,"support_score":0.0},"kg_node_id":null,"outcome_check_due":null,"alternatives":[],"disclaimer":"This is a self-care suggestion, not medical advice or a diagnosis. If distress persists, please contact a qualified professional."}}];
+
+const $ = id => document.getElementById(id);
+const cap = s => String(s).replace(/_/g,' ');
+
+/* ── Scenario tabs ────────────────────────────────────────────────────────── */
+DATA.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.className = 'tab';
+  b.textContent = s.label;
+  b.setAttribute('role','tab');
+  b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+  b.onclick = () => select(i);
+  $('tabs').appendChild(b);
+});
+
+function select(i){
+  [...$('tabs').children].forEach((t,j) =>
+    t.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+  render(DATA[i]);
+}
+
+/* ── Render ───────────────────────────────────────────────────────────────── */
+const r_suppressed = s => s.result.suppressed;
+
+function render(s){
+  $('blurb').textContent = s.blurb;
+
+  /* inputs */
+  const m = s.module1;
+  $('m1').innerHTML = [
+    ['tier', m.tier], ['confidence', m.confidence],
+    ['baseline dev.', m.baseline_deviation + 'σ'],
+    ['signal', m.signal_quality], ['mode', cap(m.baseline_mode)],
+    ['support', m.support_detected ? m.support_score : 'none'],
+  ].map(([k,v]) => `<div class="f"><span>${k}</span> <b>${v}</b></div>`).join('');
+
+  const c = s.module2;
+  $('m2card').className = 'card' + (c ? '' : ' absent');
+  $('m2').innerHTML = c
+    ? [['trigger', c.trigger_type], ['confidence', c.trigger_confidence],
+       ['location', cap(c.location_context)], ['social', cap(c.social_context)]]
+      .map(([k,v]) => `<div class="f"><span>${k}</span> <b>${v}</b></div>`).join('')
+    : '<div class="empty">No dialogue completed — all context treated as ' +
+      '<b>unknown</b>. The module proceeds on Module 1 signals alone.</div>';
+
+  /* funnel — left */
+  $('poolCount').innerHTML = s.pool_size
+    ? `${s.pool_size} <em>of 22 feasible</em>`
+    : `<em style="font-size:15px">Not assessed — gated before filtering</em>`;
+
+  /* When the episode is suppressed, Layer 1's gate stops processing BEFORE
+     feasibility filtering runs — so no intervention was actually assessed.
+     Showing per-item exclusion reasons here would misrepresent the pipeline. */
+  $('pills').innerHTML = s.library.map(iv => {
+    if (r_suppressed(s)) return `<span class="pill out">${iv.name}</span>`;
+    return iv.feasible
+      ? `<span class="pill keep">${iv.name}</span>`
+      : `<span class="pill out">${iv.name}<span class="why">${iv.reason}</span></span>`;
+  }).join('');
+
+  /* funnel — right */
+  const r = s.result;
+  if (r.suppressed){
+    $('rankHead').innerHTML = `—`;
+    $('rank').innerHTML =
+      `<li style="border-style:dashed;color:var(--muted);font-size:12.5px;
+         display:block;padding:14px">Nothing is ranked. The gate stops
+         processing before any learned layer runs.</li>`;
+  } else {
+    $('rankHead').innerHTML = `Top 3 <em>of ${s.pool_size}</em>`;
+    const names = {};
+    s.library.forEach(iv => names[iv.id] = iv);
+    $('rank').innerHTML = s.ranked.map((id,i) => {
+      const iv = names[id];
+      return `<li class="${i===0?'top':''}">
+        <span class="pos">${i+1}</span>
+        <span><span class="nm">${iv.name}</span><br>
+        <span class="meta">${iv.type} · ${iv.duration} min</span></span>
+        ${i===0 ? '<span class="tag">delivered</span>' : ''}</li>`;
+    }).join('');
+  }
+
+  /* result card */
+  if (r.suppressed){
+    $('rec').className = 'rec supp';
+    $('rec').innerHTML = `
+      <div class="lab">No recommendation issued</div>
+      <h2>Suppressed</h2>
+      <div class="m">${r.suppression_reason}</div>
+      <div class="why-box">Nothing is recommended when the physiological signal
+      cannot be trusted — regardless of the stress tier detected. Withholding is
+      the correct clinical response, and the episode is still logged.</div>`;
+  } else {
+    $('rec').className = 'rec';
+    const expl = r.gnn_explanation.replace(/because:/,'<b>because:</b>')
+                                  .replace(/Weighed against:/,'<b>Weighed against:</b>');
+    $('rec').innerHTML = `
+      <div class="lab">Recommended</div>
+      <h2>${r.intervention_name}</h2>
+      <div class="m">${r.intervention_type} · ${r.intervention_duration} minutes ·
+        ${r.intervention_id}</div>
+      <div class="why-box">${expl}</div>
+      <div class="scores">
+        <div class="sc"><div class="v">${r.layer1_score.toFixed(4)}</div>
+          <div class="k">Layer 1</div></div>
+        <span class="arw">→</span>
+        <div class="sc"><div class="v">${r.layer2_score >= 0 ? '+' : ''}${r.layer2_score.toFixed(4)}</div>
+          <div class="k">Layer 2</div></div>
+        <span class="arw">→</span>
+        <div class="sc"><div class="v">${r.layer3_score >= 0 ? '+' : ''}${r.layer3_score.toFixed(4)}</div>
+          <div class="k">Layer 3</div></div>
+      </div>`;
+  }
+
+  /* side panel */
+  $('side').innerHTML = r.suppressed
+    ? `<div class="mini"><h3>What still happens</h3>
+         <div class="row"><span>Episode logged</span><b>yes</b></div>
+         <div class="row"><span>Notification sent</span><b>no</b></div>
+         <div class="row"><span>Follow-up scheduled</span><b>no</b></div></div>
+       <div class="mini"><div class="disc">${r.disclaimer}</div></div>`
+    : `<div class="mini"><h3>Delivery</h3>
+         <div class="row"><span>Follow-up due</span>
+           <b>${String(r.outcome_check_due).slice(11,16)} &nbsp;(+30 min)</b></div>
+         <div class="row"><span>Candidate pool</span><b>${r.candidate_pool_size}</b></div>
+         <div class="row"><span>Final layer</span><b>${r.recommendation_layer}</b></div>
+       </div>
+       <div class="mini"><h3>Alternatives offered</h3>
+         ${r.alternatives.map(a =>
+           `<div class="row"><span>${a.intervention_id}</span>
+            <b>${a.intervention_name}</b></div>`).join('')}
+       </div>
+       <div class="mini"><div class="disc">${r.disclaimer}</div></div>`;
+
+  $('foot').textContent = `${r.user_id} · ${String(r.timestamp).replace('T',' ').slice(0,16)}`;
+}
+
+select(0);
+</script>
+</body>
+</html>
